@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Studyly — Student Exam Management System</title>
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+</head>
+<body>
+<div id="backgroundStage" aria-hidden="true"><img id="sceneA" class="active" alt=""><img id="sceneB" alt=""></div>
+<div id="toast"></div>
+<section id="loginScreen" class="login-screen editorial-login full-poster-login">
+  <div class="poster-shell split-login-shell">
+    <header class="poster-header">
+      <span>STUDYLY / LEARNING SYSTEM</span>
+      <span>EST. 2026</span>
+    </header>
+    <main class="split-login-main">
+      <section class="split-brand-panel">
+        <div class="split-eyebrow">YOUR PERSONAL STUDY SPACE</div>
+        <div class="split-wordmark">studyly<span>.</span></div>
+        <p class="split-description">One place for exams, notes,<br>quizzes and your next big goal.</p>
+        <div class="login-quote-panel" aria-live="polite">
+          <p id="loginQuoteText"></p>
+          <small id="loginQuoteAuthor"></small>
+        </div>
+        <div class="split-tagline">FOCUS / PRACTICE / PROGRESS</div>
+      </section>
+      <section class="split-form-panel">
+        <div class="split-form-card">
+          <p class="split-form-kicker">WELCOME TO STUDYLY</p>
+          <div class="auth-tabs" role="tablist" aria-label="Account access">
+            <button type="button" class="auth-tab active" id="showLoginTab" onclick="showAuthView('login')">Sign In</button>
+            <button type="button" class="auth-tab" id="showRegisterTab" onclick="showAuthView('register')">Create Student Account</button>
+          </div>
+          <section id="authLoginView">
+            <h1>Sign in<span>.</span></h1>
+            <p class="split-form-description">Sign in with your registered email and password. Use the admin keyword in your password for Admin/Faculty access, or the principal keyword for Principal access.</p>
+            <form id="loginForm" class="split-login-form" onsubmit="event.preventDefault();login();">
+              <label for="loginEmail">EMAIL ADDRESS</label>
+              <input id="loginEmail" type="email" autocomplete="username" placeholder="you@example.com" required>
+              <label for="loginPassword">PASSWORD</label>
+              <div class="password-wrap"><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Enter your password" required><button type="button" class="password-toggle" onclick="togglePassword('loginPassword',this)">Show</button></div>
+              <button class="split-signin-button" type="submit">SIGN IN <span>↗</span></button>
+            </form>
+          </section>
+          <section id="authRegisterView" class="hidden">
+            <h1>Create account<span>.</span></h1>
+            <p class="split-form-description">Student registration is open. Admin and Principal workspaces are activated by their password keywords at sign-in.</p>
+            <form class="split-login-form" onsubmit="event.preventDefault();registerStudent();">
+              <label for="registerName">FULL NAME</label><input id="registerName" type="text" autocomplete="name" placeholder="Your full name" required minlength="2">
+              <label for="registerEmail">EMAIL ADDRESS</label><input id="registerEmail" type="email" autocomplete="email" placeholder="you@example.com" required>
+              <label for="registerPassword">CREATE PASSWORD</label><div class="password-wrap"><input id="registerPassword" type="password" autocomplete="new-password" placeholder="At least 8 characters" required minlength="8"><button type="button" class="password-toggle" onclick="togglePassword('registerPassword',this)">Show</button></div>
+              <label for="registerConfirm">CONFIRM PASSWORD</label><input id="registerConfirm" type="password" autocomplete="new-password" placeholder="Re-enter password" required minlength="8">
+              <button class="split-signin-button" type="submit">CREATE STUDENT ACCOUNT <span>↗</span></button>
+            </form>
+          </section>
+          <div class="split-form-foot">LEARN · CREATE · ACHIEVE</div>
+        </div>
+      </section>
+    </main>
+    <footer class="poster-footer"><span>STUDYLY</span><span>LEARN / PRACTICE / GROW</span><span>CONTACT: <a href="mailto:kartheekchenna001@gmail.com">kartheekchenna001@gmail.com</a></span></footer>
+  </div>
+</section>
+
+<section id="appScreen" class="hidden">
+  <aside class="sidebar">
+    <div class="brand mini"><span class="brand-mark">S</span><div><strong>Studyly</strong><small><span id="roleText"></span> workspace</small></div></div>
+    <nav id="nav"></nav>
+    <div class="card sidebar-session-actions">
+      <button class="secondary full" id="logoutBtn" type="button" onclick="logout()">Sign Out</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="xmb-systembar" aria-label="Studyly system status">
+      <div class="xmb-system-brand"><span class="xmb-orbit">◉</span><span>STUDYLY</span><i></i><small id="systemSection">PRINCIPAL WORKSPACE</small></div>
+      <div class="xmb-system-meta"><span class="xmb-live-dot"></span><span>CONNECTED</span><time id="systemClock">--:--</time></div>
+    </div>
+    <header class="topbar">
+      <div class="topbar-left"><button id="menuToggle" class="menu-toggle" type="button" aria-label="Navigation" aria-expanded="true" hidden><span></span><span></span><span></span></button><div><h1 id="pageTitle">Dashboard</h1><p id="pageSubtitle"></p></div></div>
+      <div class="profile"><span id="avatar">S</span><div><b id="profileName"></b><small id="profileRole"></small></div></div>
+    </header>
+    <div id="content"></div>
+    <footer class="studyly-contact-footer">STUDYLY · CONTACT: <a href="mailto:kartheekchenna001@gmail.com">kartheekchenna001@gmail.com</a></footer>
+  </main>
+</section>
+
+<section id="cookieConsent" class="cookie-consent hidden" role="dialog" aria-labelledby="cookieTitle" aria-describedby="cookieDescription">
+  <div class="cookie-copy">
+    <strong id="cookieTitle">Cookie preferences</strong>
+    <p id="cookieDescription">Studyly uses a strictly necessary preference cookie to remember your cookie choice. No advertising or analytics cookies are installed by this project.</p>
+  </div>
+  <div class="cookie-actions">
+    <button type="button" class="secondary" id="essentialCookiesBtn">Essential only</button>
+    <button type="button" class="primary" id="acceptCookiesBtn">Accept all</button>
+  </div>
+</section>
+
+<div id="modal" class="modal hidden">
+  <div class="modal-card">
+    <button class="close" id="closeModal">×</button>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<script src="backgrounds.js"></script>
+<script>document.body.classList.remove("nav-open");</script>
+<!-- React is used only by the added Student Management page. Existing Studyly code is preserved. -->
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="app.js"></script>
+<script src="exam-enhancements.js"></script>
+<script src="react-student-management.js"></script>
+<script src="cookies.js"></script>
+<script>
+
+(function(){
+ const clock=document.getElementById('systemClock');
+ const section=document.getElementById('systemSection');
+ function tick(){if(clock) clock.textContent=new Intl.DateTimeFormat(undefined,{hour:'2-digit',minute:'2-digit'}).format(new Date());}
+ tick();setInterval(tick,30000);
+ const role=document.getElementById('roleText');
+ if(role&&section){const sync=()=>section.textContent=(role.textContent||'STUDENT').toUpperCase()+' WORKSPACE';sync();new MutationObserver(sync).observe(role,{childList:true,characterData:true,subtree:true});}
+})();
+</script>
+</body>
+</html>
